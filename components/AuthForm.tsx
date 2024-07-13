@@ -11,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { signIn, signUp } from "@/lib/actions/user.actions";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState();
@@ -35,7 +36,16 @@ const AuthForm = ({ type }: { type: string }) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    if (type === "sign-in") {
+      const email = data?.email;
+      const password = data?.password;
+
+      const user = signIn({ email, password });
+    }
+
+    if (type === "sign-up") {
+      const newUser = signUp(data);
+    }
   };
 
   return (
