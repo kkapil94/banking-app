@@ -12,12 +12,14 @@ import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { signIn, signUp } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
 const AuthForm = ({ type }: { type: string }) => {
-  const [user, setUser] = useState();
-  const [isLoading, setIsLoading] = useState();
+  const [user, setUser] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>();
   const formSchema = authFormSchema(type);
   const [data, setData] = useState<any>({});
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,16 +37,44 @@ const AuthForm = ({ type }: { type: string }) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    if (type === "sign-in") {
-      const email = data?.email;
-      const password = data?.password;
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
 
-      const user = signIn({ email, password });
-    }
+    try {
+      // Sign up with Appwrite & create plaid token
 
-    if (type === "sign-up") {
-      const newUser = signUp(data);
+      if (type === "sign-up") {
+        const userData = {
+          firstName: data.firstName!,
+          lastName: data.lastName!,
+          address1: data.address1!,
+          city: data.city!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dateOfBirth: data.dateOfBirth!,
+          ssn: data.ssn!,
+          email: data.email,
+          password: data.password,
+        };
+
+        const newUser = await signUp(userData);
+
+        setUser(newUser);
+      }
+
+      if (type === "sign-in") {
+        const response: any = await signIn({
+          email: data.email,
+          password: data.password,
+        });
+        console.log(response);
+
+        if (response) router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
