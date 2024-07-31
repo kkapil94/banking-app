@@ -4,6 +4,8 @@ import React from "react";
 import BankCard from "./BankCard";
 
 const RightSidebar = ({ user, banks, transactions }: RightSidebarProps) => {
+  console.log(user);
+
   return (
     <>
       <aside className="right-sidebar">
@@ -17,7 +19,7 @@ const RightSidebar = ({ user, banks, transactions }: RightSidebarProps) => {
               </div>
               <div className="profile-details">
                 <h1 className="profile-name">{user?.name}</h1>
-                <p className="profile-email">{user.email}</p>
+                <p className="profile-email">{user?.email}</p>
               </div>
             </div>
           </div>
@@ -36,7 +38,7 @@ const RightSidebar = ({ user, banks, transactions }: RightSidebarProps) => {
               <BankCard
                 key={banks[0].$id}
                 account={banks[0]}
-                userName={`${user.firstName} ${user.lastName}`}
+                userName={`${user?.name}`}
                 showBalance={false}
               />
               {banks[1] && (
@@ -44,7 +46,7 @@ const RightSidebar = ({ user, banks, transactions }: RightSidebarProps) => {
                   <BankCard
                     key={banks[1].$id}
                     account={banks[1]}
-                    userName={`${user.firstName} ${user.lastName}`}
+                    userName={`${user?.name}`}
                     showBalance={false}
                   />
                 </div>
